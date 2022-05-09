@@ -9,9 +9,6 @@ const client = new Client({
     intents: [Discord.Intents.FLAGS.GUILDS, Discord.Intents.FLAGS.GUILD_MESSAGES]
 });
 
-// fetch this https://yrpaxzdyg6.execute-api.us-west-2.amazonaws.com/prod if reponsi null or undefined;report me
-
-// on redy shwo name
 client.on("ready", () => {
     console.log(`${client.user.tag} is ready!`);
     client.user.setPresence({
