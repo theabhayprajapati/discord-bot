@@ -1,7 +1,8 @@
 {
   "dependencies": {
     "discord.js": "^13.6.0",
-    "dotenv": "^16.0.0"
+    "dotenv": "^16.0.0",
+    "node-fetch": "^3.2.4"
   },
   "name": "discordbot",
   "version": "1.0.0",
@@ -10,7 +11,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node main.js",
-    "dev": "nodemon main.js"  
+    "dev": "nodemon main.js"
   },
   "author": "",
   "license": "ISC",
