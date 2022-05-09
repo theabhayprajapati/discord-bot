@@ -4,14 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npm i && npm run build && node index.js",
+    "build": "echo 'Hello world'"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/theabhayprajapati/discord-bot.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "Abhay prajpati",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/theabhayprajapati/discord-bot/issues"
