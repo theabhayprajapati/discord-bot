@@ -2,6 +2,8 @@ import Discord, { Client } from "discord.js";
 import dotenv from "dotenv";
 dotenv.config()
 // let bot ready wrtie the msgs
+client.login(process.env.DISCORD_BOT_TOKEN);
+
 const client = new Client({
     disableEveryone: true,
     partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
@@ -11,5 +13,3 @@ const client = new Client({
 client.on("ready", () => {
     console.log(`${client.user.tag} is ready!`);
 });
-
-client.login(process.env.DISCORD_BOT_TOKEN);
