@@ -70,42 +70,9 @@ client.on('messageCreate', async (msg) => {
         const food = await suggestFood();
         const sender = msg.author.username;
         msg.channel.send(`
-        @${sender} here have a try to **${food.name}**, from **${food.area}** in **${food.category}**.
+        @${sender} here have a try to **${food.name}**, **${food.area}** recipe**.
         ${food.image}
         `
-        );
-        // if reply is yes then send kvideo and source
-        const filter = msg => msg.author.id === msg.author.id;
-        const collector = msg.channel.createMessageCollector(filter, { time: 60000 });
-        collector.on('collect', async (message) => {
-            if (message.content === 'yes' || message.content === 'y') {
-                msg.channel.send(`
-                check the video: ${food.sourceVideoUrl} recipe}`)
-            }
-            if (message.content === 'no' || message.content === 'n') {
-                // mention the sender
-
-                msg.channel.send(`
-                finding new food..`)
-                const sender = msg.author.username;
-                msg.channel.send(`
-                @${sender} here have a try to **${food.name}**, **${food.area}** in **${food.category}**.
-                ${food.image}
-                `
-                )
-            }
-        }
-
-        );
-        // if msg is stop then stop
-        const filter2 = msg => msg.author.id === msg.author.id;
-        const collector2 = msg.channel.createMessageCollector(filter2, { time: 60000 });
-        collector2.on('collect', async (message) => {
-            if (message.content === 'stop') {
-                collector.stop();
-                collector2.stop();
-            }
-        }
         );
     }
 })
