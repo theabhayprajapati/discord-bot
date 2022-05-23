@@ -69,8 +69,11 @@ client.on('messageCreate', async (msg) => {
     if (msg.content === '!food') {
         const food = await suggestFood();
         const sender = msg.author.username;
+        // get sender id
+        const senderId = msg.author.id;
         msg.channel.send(`
-        @${sender} here have a try to **${food.name}**, **${food.area}** recipe**.
+        <@${senderId}> 
+        here have a try to, __*${food.name}*__ a **${food.area ? food.area : "tasty"}** recipe with health score of ${food.healthScore}.
         ${food.image}
         `
         );
