@@ -30,24 +30,28 @@ client.on('ready', () => {
 const suggestFood = async () => {
     const foodInfo = {
         name: '',
-        calories: '',
-        fat: '',
         image: '',
         sourceUrl: '',
         sourceVideoUrl: '',
-        category: '',
-        location: '',
+
+        healthScore: '',
+    };
+    // parameter 
+    const params = {
+        apiKey: process.env.API_KEY,
+        tags: "vegetarian"
     }
-    const url = 'https://www.themealdb.com/api/json/v1/1/random.php';
-    const food = await fetch(url);
-    const data = await food.json();
-    const foodData = data.meals[0];
-    foodInfo.name = foodData.strMeal;
-    foodInfo.category = foodData.strCategory;
-    foodInfo.area = foodData.strArea;
-    foodInfo.image = foodData.strMealThumb;
-    foodInfo.sourceUrl = foodData.strSource;
-    foodInfo.sourceVideoUrl = foodData.strYoutube;
+    const options = {
+        method: 'GET'
+    };
+    const data = await fetch(`https://api.spoonacular.com/recipes/random?apiKey=${process.env.API_KEY}&tags=indian`, options);
+    const json = await data.json();
+
+    foodInfo.name = json.recipes[0].title;
+    foodInfo.sourceUrl = json.recipes[0].sourceUrl;
+    foodInfo.healthScore = json.recipes[0].healthScore;
+    foodInfo.image = json.recipes[0].image;
+    console.log(foodInfo);
     return foodInfo;
 }
 client.on('messageCreate', async (msg) => {
@@ -70,22 +74,22 @@ client.on('messageCreate', async (msg) => {
         ${food.image}
         `
         );
-        // if reply is yes then send video and source
+        // if reply is yes then send kvideo and source
         const filter = msg => msg.author.id === msg.author.id;
         const collector = msg.channel.createMessageCollector(filter, { time: 60000 });
         collector.on('collect', async (message) => {
             if (message.content === 'yes' || message.content === 'y') {
                 msg.channel.send(`
-                check the video: ${food.sourceVideoUrl} recipe}`) 
+                check the video: ${food.sourceVideoUrl} recipe}`)
             }
             if (message.content === 'no' || message.content === 'n') {
                 // mention the sender
-                
+
                 msg.channel.send(`
                 finding new food..`)
                 const sender = msg.author.username;
                 msg.channel.send(`
-                @${sender} here have a try to **${food.name}**, from **${food.area}** in **${food.category}**.
+                @${sender} here have a try to **${food.name}**, **${food.area}** in **${food.category}**.
                 ${food.image}
                 `
                 )
