@@ -77,6 +77,31 @@ client.on('messageCreate', async (msg) => {
         ${food.image}
         `
         );
+        // if sender reply is yes send recipe
+        const filter = (reaction, user) => {
+            return ['✅'].includes(reaction.emoji.name) && user.id === senderId;
+        }
+        msg.awaitReactions(filter, { max: 1, time: 60000, errors: ['time'] })
+            .then(collected => {
+                console.log(collected.first());
+                msg.channel.send(`
+                <@${senderId}> 
+                here is your recipe, __*${food.name}*__ a **${food.area ? food.area : "tasty"}** recipe with health score of ${food.healthScore}.
+                ${food.image}
+                `
+                );
+            }
+            )
+            .catch(collected => {
+                console.log(collected.first());
+                msg.channel.send(`
+                <@${senderId}> 
+                you didn't reply, here is your recipe, __*${food.name}*__ a **${food.area ? food.area : "tasty"}** recipe with health score of ${food.healthScore}.
+                ${food.image}
+                `
+                );
+            }
+            )
     }
 })
 // app.use(express.json());
