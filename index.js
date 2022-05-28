@@ -13,9 +13,9 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 app.get('/', (req, res) => {
     res.json({
-        subject: 'hello',
-        status: 'world',
-        color: 'blue'
+        subject: 'leetcode',
+        status: '814,050',
+        color: 'orange',
     })
 })
 app.listen(PORT, () => {
