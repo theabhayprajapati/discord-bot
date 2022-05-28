@@ -10,14 +10,25 @@ dotenv.config();
 
 const app = express();
 // app.use('/leetcode', leetcode);
+
 const PORT = process.env.PORT || 3000;
+
 app.get('/', (req, res) => {
+    console.log(JSON.STRINGIFY({
+        subject: "Leetcode Rank",
+        status: "leetcode",
+        color: "orange",
+
+    }));
+
     res.json({
         subject: 'leetcode',
         status: '814,050',
         color: 'orange',
     })
 })
+// app.use('/leetcode', leetcode);
+
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 })
