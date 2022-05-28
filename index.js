@@ -14,7 +14,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.get('/', (req, res) => {
-    console.log(JSON.STRINGIFY({
+    console.log(JSON.stringify({
         subject: "Leetcode Rank",
         status: "leetcode",
         color: "orange",
