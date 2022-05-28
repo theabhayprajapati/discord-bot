@@ -13,10 +13,9 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 app.get('/', (req, res) => {
     res.json({
-        this: "this is leetcode api",
-        leetcode: "https://leetcode.com/abhayprajapati",
-        github: "https://github.com/theabhayprajapati",
-        twitter: "https://twitter.com/abhayprajapati_"
+        subject: 'hello',
+        status: 'world',
+        color: 'blue'
     })
 })
 app.listen(PORT, () => {
@@ -25,7 +24,6 @@ app.listen(PORT, () => {
 
 // const app = express();
 console.log("Discord.js version: " + Discord.version + "\n" + Discord);
-const port = 3000;
 
 const client = new Client({
     disableEveryone: true,
