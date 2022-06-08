@@ -155,7 +155,7 @@ client.on('messageCreate', async (msg) => {
     }
 })
 
-const getResult = async () => {
+const getResult = async (seatNo, motherName) => {
     const browser = await puppeteer.launch({
         headless: false,
         args: ['--start-maximized']
@@ -165,9 +165,7 @@ const getResult = async () => {
         waitUntil: 'networkidle2'
     });
 
-    // C M036921 ARUNA
-    const seatNo = "M036921"
-    const motherName = "ARUNA";
+
     await page.$eval('input[name=regno]', (el, value) => el.value = value, seatNo);
     await page.$eval('input[name=mname]', (el, value) => el.value = value, motherName);
     await page.click('input[type=submit]');
