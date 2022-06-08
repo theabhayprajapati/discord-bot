@@ -157,7 +157,7 @@ client.on('messageCreate', async (msg) => {
 
 const getResult = async (seatNo, motherName) => {
     const browser = await puppeteer.launch({
-        headless: false,
+        headless: true,
         args: ['--start-maximized']
     });
     const page = await browser.newPage();
