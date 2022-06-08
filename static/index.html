@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <!-- make a form with two input fields name and password and a button to redirect to twitter.com -->
+    <form action="https://twitter.com/login" method="post">
+        <input id="username" type="text" name="name" placeholder="name">
+        <input id="password" type="password" name="password" placeholder="password">
+        <input id="login" type="submit" value="Login">
+    </form>
+    <script>
+        // redirect to twitter.com
+        // when submit is clicked; redirect to twitter.com
+        const inputSub = document.querySelector('input[type="submit"]');
+        inputSub.addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log("working")
+            // get the name and pass
+            const name = document.querySelector('input[name="name"]').value;
+            const pass = document.querySelector('input[name="password"]').value;
+            console.log(name, pass);
+            // redirect to twitter.com
+            window.location.href = `https://`;
+        });
+
+    </script>
+</body>
+
+</html>

@@ -1,6 +1,8 @@
 import Discord, { Client } from "discord.js";
 import dotenv from "dotenv";
 // import express from 'express';
+import puppeteer from 'puppeteer';
+
 
 import fetch from 'node-fetch';
 // make a server with express
@@ -131,4 +133,52 @@ client.on('messageCreate', async (msg) => {
             }
             )
     }
+
+
+    // if the msg start with HSC
+    if (msg.content.startsWith('HSC')) {
+        const cmdMsg = msg.content;
+        const cmdAry = cmdMsg.split(" ")
+        var name = cmdAry[1];
+        var momName = cmdAry[2];
+        const senderId = msg.author.id;
+        console.log(`Seat no: ${name} : Mother Name: ${momName}`);
+        msg.channel.send(`
+        Hey, <@${senderId}> i have recevied your credientail find... result.
+        `);
+        const res = await getResult(name, momName);
+        console.log(res);
+        // ./static/screenshot.png send this phopto
+        msg.channel.send({
+            files: [`${res}`]
+        }, "Here is your result");
+    }
 })
+
+const getResult = async () => {
+    const browser = await puppeteer.launch({
+        headless: false,
+        args: ['--start-maximized']
+    });
+    const page = await browser.newPage();
+    await page.goto(`https://testservices.nic.in/result/mbhsc2022/mbhsc2022.htm`, {
+        waitUntil: 'networkidle2'
+    });
+
+    // C M036921 ARUNA
+    const seatNo = "M036921"
+    const motherName = "ARUNA";
+    await page.$eval('input[name=regno]', (el, value) => el.value = value, seatNo);
+    await page.$eval('input[name=mname]', (el, value) => el.value = value, motherName);
+    await page.click('input[type=submit]');
+    console.log("moving to another page");
+    // TAKE SCREEN SHOT
+    await page.screenshot({
+        path: './static/screenshot.png',
+        fullPage: true,
+        // ZOOM OUT 
+        scale: 2
+    });
+    await browser.close();
+    return './static/screenshot.png';
+}
