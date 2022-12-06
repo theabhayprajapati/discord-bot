@@ -75,8 +75,6 @@ client.on('messageCreate', async (msg) => {
     }
     /* brad */
     if (msg.content === 'brad') {
-
-
         // every 80 seconds
         setInterval(() => {
             const params = {
@@ -84,7 +82,6 @@ client.on('messageCreate', async (msg) => {
             }
             T.get("users/show", params, (err, data, response) => {
                 msg.reply(`${data.followers_count} followers, aimed : ${aim}`);
-
                 if (err) {
                     console.log(err);
                 } else {
@@ -94,7 +91,7 @@ client.on('messageCreate', async (msg) => {
                             if (err) {
                                 console.log(err);
                             } else {
-                                msg.reply(`followed ${curentuser.username}`);
+                                // msg.reply(`followed ${curentuser.username}`);
                                 console.log(data);
                             }
                         }
@@ -121,9 +118,6 @@ client.on('messageCreate', async (msg) => {
                                         }
                                     }
                                     )
-                                    msg.reply(`i am following ${curentuser.username}`);
-                                } else {
-                                    msg.reply(`i am not following ${curentuser.username}`);
                                 }
                             }
                         }
@@ -134,7 +128,6 @@ client.on('messageCreate', async (msg) => {
                             if (err) {
                                 console.log(err);
                             } else {
-                                msg.reply(`unfollowed ${curentuser.username}`);
                                 console.log(data);
                             }
                         }
@@ -144,7 +137,7 @@ client.on('messageCreate', async (msg) => {
                 }
             }
             )
-        }, 80000);
+        }, 60000 * 5);
 
     }
     /* leetcode */
