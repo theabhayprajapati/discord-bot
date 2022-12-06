@@ -77,7 +77,7 @@ client.on('messageCreate', async (msg) => {
     /* brad */
     if (msg.content === 'brad') {
         // every 80 seconds
-        setInterval(() => {
+        const brads_interval = setInterval(() => {
             const params = {
                 screen_name: curentuser.username,
             }
@@ -135,6 +135,11 @@ client.on('messageCreate', async (msg) => {
                         )
                     }
                     msg.reply(`Brad has ${(data.followers_count - diff)} followers`);
+                }
+                /* if the data.followers is more than aimed the close the interanl the clost he function */
+                if ((data.followers_count) >= aim) {
+                    clearInterval(brads_interval);
+                    return; // close the function
                 }
             }
             )
