@@ -65,10 +65,11 @@ client.on('ready', () => {
 );
 
 const aim = 6000;
+const diff = 2;
+
 /* get message */
 /* on hi send hello */
 client.on('messageCreate', async (msg) => {
-
     console.log("-----------------");
     if (msg.content === 'hi') {
         msg.reply('hello');
@@ -81,12 +82,12 @@ client.on('messageCreate', async (msg) => {
                 screen_name: curentuser.username,
             }
             T.get("users/show", params, (err, data, response) => {
-                msg.reply(`${data.followers_count} followers, aimed : ${aim}`);
+                msg.reply(`${data.followers_count - diff} followers, aimed : ${aim}`);
                 if (err) {
                     console.log(err);
                 } else {
                     /* create follow if it is less than 1 */
-                    if (data.followers_count >= (aim - 1)) {
+                    if ((data.followers_count - diff) >= (aim - 1)) {
                         T.post("friendships/create", params, (err, data, response) => {
                             if (err) {
                                 console.log(err);
@@ -133,7 +134,7 @@ client.on('messageCreate', async (msg) => {
                         }
                         )
                     }
-                    msg.reply(`Brad has ${data.followers_count} followers`);
+                    msg.reply(`Brad has ${(data.followers_count - diff)} followers`);
                 }
             }
             )
