@@ -1,10 +1,7 @@
-import Discord, { Client } from "discord.js";
+import { Client, GatewayIntentBits, IntentsBitField, Partials } from "discord.js";
 import dotenv from "dotenv";
 // import express from 'express';
-import puppeteer from 'puppeteer';
-
-
-import fetch from 'node-fetch';
+import Twit from "twit";
 // make a server with express
 import express from 'express';
 // import leetcode from './api/leetcode.js';
@@ -35,13 +32,23 @@ app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 })
 
-// const app = express();
-console.log("Discord.js version: " + Discord.version + "\n" + Discord);
+const curentuser = {
+    username: 'bradneuberg',
+}
 
+
+const T = new Twit({
+    consumer_key: process.env.CONSUMER_KEY,
+    consumer_secret: process.env.CONSUMER_SECRET,
+    access_token: process.env.ACCESS_TOKEN,
+    access_token_secret: process.env.ACCESS_TOKEN_SECRET,
+    bearer_token: process.env.BEARER_TOKEN,
+});
 const client = new Client({
     disableEveryone: true,
-    partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
-    intents: [Discord.Intents.FLAGS.GUILDS, Discord.Intents.FLAGS.GUILD_MESSAGES]
+    partials: [Partials.Channel, Partials.GuildMember, Partials.Message, Partials.Reaction, Partials.User],
+    intents: [GatewayIntentBits.Guilds, IntentsBitField.Flags.Guilds, IntentsBitField.Flags.GuildMessages, GatewayIntentBits.DirectMessages, GatewayIntentBits.GuildBans,
+    GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent]
 });
 
 client.login(process.env.TOKEN);
@@ -57,126 +64,91 @@ client.on('ready', () => {
 }
 );
 
-const suggestFood = async () => {
-    const foodInfo = {
-        name: '',
-        image: '',
-        sourceUrl: '',
-        sourceVideoUrl: '',
-
-        healthScore: '',
-    };
-    // parameter 
-    const params = {
-        apiKey: process.env.API_KEY,
-        tags: "vegetarian"
-    }
-    const options = {
-        method: 'GET'
-    };
-    const data = await fetch(`https://api.spoonacular.com/recipes/random?apiKey=${process.env.API_KEY}&tags=indian`, options);
-    const json = await data.json();
-
-    foodInfo.name = json.recipes[0].title;
-    foodInfo.sourceUrl = json.recipes[0].sourceUrl;
-    foodInfo.healthScore = json.recipes[0].healthScore;
-    foodInfo.image = json.recipes[0].image;
-    console.log(foodInfo);
-    return foodInfo;
-}
+const aim = 6000;
+/* get message */
+/* on hi send hello */
 client.on('messageCreate', async (msg) => {
-    if (msg.author.bot) return;
-    console.log(msg.content[1])
 
-    if (msg.content === '!hello') {
-        msg.channel.send('Hello!');
+    console.log("-----------------");
+    if (msg.content === 'hi') {
+        msg.reply('hello');
     }
-    // dm
-    if (msg.content === "dm") {
-        msg.author.send("Hello!");
-    }
-    // if msg = !food
-    if (msg.content === '!food') {
-        const food = await suggestFood();
-        const sender = msg.author.username;
-        // get sender id
-        const senderId = msg.author.id;
-        msg.channel.send(`
-        <@${senderId}> 
-        here have a try to, __*${food.name}*__ a **${food.area ? food.area : "tasty"}** recipe with health score of ${food.healthScore}.
-        ${food.image}
-        `
-        );
-        // if sender reply is yes send recipe
-        const filter = (reaction, user) => {
-            return ['✅'].includes(reaction.emoji.name) && user.id === senderId;
-        }
-        msg.awaitReactions(filter, { max: 1, time: 60000, errors: ['time'] })
-            .then(collected => {
-                console.log(collected.first());
-                msg.channel.send(`
-                <@${senderId}> 
-                here is your recipe, __*${food.name}*__ a **${food.area ? food.area : "tasty"}** recipe with health score of ${food.healthScore}.
-                ${food.image}
-                `
-                );
+    /* brad */
+    if (msg.content === 'brad') {
+
+
+        // every 80 seconds
+        setInterval(() => {
+            const params = {
+                screen_name: curentuser.username,
+            }
+            T.get("users/show", params, (err, data, response) => {
+                msg.reply(`${data.followers_count} followers, aimed : ${aim}`);
+
+                if (err) {
+                    console.log(err);
+                } else {
+                    /* create follow if it is less than 1 */
+                    if (data.followers_count >= (aim - 1)) {
+                        T.post("friendships/create", params, (err, data, response) => {
+                            if (err) {
+                                console.log(err);
+                            } else {
+                                msg.reply(`followed ${curentuser.username}`);
+                                console.log(data);
+                            }
+                        }
+                        )
+                    }
+                    /* check if i am following him or not  */
+                    if (data.followers_count == aim) {
+                        T.get("friendships/show", params, (err, data, response) => {
+                            if (err) {
+                                console.log(err);
+                            } else {
+                                console.log(data);
+                                if (data.relationship.source.following == true) {
+                                    /* create tweet */
+                                    const tweet = {
+                                        status: `@${curentuser.username} I am following you now! 6000th follower!`,
+                                    }
+                                    T.post("statuses/update", tweet, (err, data, response) => {
+                                        if (err) {
+                                            console.log(err);
+                                        } else {
+                                            msg.reply(`tweeted ${tweet.status}`);
+                                            console.log(data);
+                                        }
+                                    }
+                                    )
+                                    msg.reply(`i am following ${curentuser.username}`);
+                                } else {
+                                    msg.reply(`i am not following ${curentuser.username}`);
+                                }
+                            }
+                        }
+                        )
+                    }
+                    if (data.followers_count < (aim - 2)) {
+                        T.post("friendships/destroy", params, (err, data, response) => {
+                            if (err) {
+                                console.log(err);
+                            } else {
+                                msg.reply(`unfollowed ${curentuser.username}`);
+                                console.log(data);
+                            }
+                        }
+                        )
+                    }
+                    msg.reply(`Brad has ${data.followers_count} followers`);
+                }
             }
             )
-            .catch(collected => {
-                console.log(collected.first());
-                msg.channel.send(`
-                <@${senderId}> 
-                you didn't reply, here is your recipe, __*${food.name}*__ a **${food.area ? food.area : "tasty"}** recipe with health score of ${food.healthScore}.
-                ${food.image}
-                `
-                );
-            }
-            )
+        }, 80000);
+
     }
+    /* leetcode */
 
 
-    // if the msg start with HSC
-    if (msg.content.startsWith('HSC')) {
-        const cmdMsg = msg.content;
-        const cmdAry = cmdMsg.split(" ")
-        var name = cmdAry[1];
-        var momName = cmdAry[2];
-        const senderId = msg.author.id;
-        console.log(`Seat no: ${name} : Mother Name: ${momName}`);
-        msg.channel.send(`
-        Hey, <@${senderId}> i have recevied your credientail find... result.
-        `);
-        const res = await getResult(name, momName);
-        console.log(res);
-        // ./static/screenshot.png send this phopto
-        msg.channel.send({
-            files: [`${res}`]
-        }, "Here is your result");
-    }
-})
-
-const getResult = async (seatNo, motherName) => {
-    const browser = await puppeteer.launch({
-        headless: true,
-        args: ['--start-maximized']
-    });
-    const page = await browser.newPage();
-    await page.goto(`https://testservices.nic.in/result/mbhsc2022/mbhsc2022.htm`, {
-        waitUntil: 'networkidle2'
-    });
-
-
-    await page.$eval('input[name=regno]', (el, value) => el.value = value, seatNo);
-    await page.$eval('input[name=mname]', (el, value) => el.value = value, motherName);
-    await page.click('input[type=submit]');
-    console.log("moving to another page");
-    // TAKE SCREEN SHOT
-    await page.screenshot({
-        path: './static/screenshot.png',
-        fullPage: true,
-        // ZOOM OUT 
-        scale: 2
-    });
-    await browser.close();
-    return './static/screenshot.png';
 }
+);
